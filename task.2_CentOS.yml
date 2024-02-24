@@ -1,0 +1,36 @@
+- hosts: all
+  tasks:
+  - name: Disable SELinux
+    selinux:
+      state: disabled
+
+  - name: Install apache    
+    yum:
+      name: httpd
+      state: latest
+
+  - name: Start service httpd, if not started
+    service:
+      name: httpd
+      state: started  
+
+  - name: Enable service httpd, and not touch the state
+    service:
+      name: httpd
+      enabled: yes   
+
+  - name: Download template
+    ansible.builtin.get_url:
+      url: https://www.free-css.com/assets/files/free-css-templates/download/page291/atlas.zip
+      dest: /tmp/atlas.zip
+
+  - name: Unzip template
+    unarchive:
+      src: /tmp/atlas.zip
+      dest: /var/www/html
+      remote_src: yes
+
+  - name: Move Template file to /var/www/html
+    shell: "mv /tmp/Atlas  /var/www/html"
+    args:
+      creates: /var/www/html/Atlas
